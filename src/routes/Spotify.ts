@@ -38,5 +38,27 @@ export async function getCurrent(req: Request, res: Response) {
         };
         return res.status(OK).json({ track });
     }
-    return res.status(404).json({ "message": "not found" })
+    return res.status(404).json({ message: "Not Found" })
+}
+
+export async function searchArtist(req: Request, res: Response) {
+    if (!req.params.query) return;
+    if (!req.user) return;
+    let reqUser = req.user as SpoUser;
+    let spotifyApi = new SpotifyWebApi({
+        clientId: CLIENT_ID,
+        clientSecret: CLIENT_SECRET,
+        redirectUri: OAUTH2_CALLBACK_URL,
+        accessToken: reqUser.accessToken,
+        refreshToken: reqUser.refreshToken
+    });
+    // Search artists whose name contains 'Love'
+    spotifyApi.searchArtists(req.params.query)
+        .then(function (data) {
+            console.log(`Search artists by ${req.params.query}`);
+            return res.status(OK).json({ body: data.body })
+        }, function (err) {
+            console.error(err);
+            return res.status(404).json({ message: "Not Found" })
+        });
 }
