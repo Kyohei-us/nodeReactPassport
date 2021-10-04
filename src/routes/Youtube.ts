@@ -19,7 +19,7 @@ export async function youtubeGetPlaylists(req: Request, res: Response) {
         }
     );
     if (ret) {
-        return res.status(200).json( ret.data )
+        return res.status(200).json(ret.data)
     }
 }
 
@@ -36,7 +36,7 @@ export async function youtubeGetChannel(req: Request, res: Response) {
         }
     );
     if (ret) {
-        return res.status(200).json( ret.data )
+        return res.status(200).json(ret.data)
     }
 }
 
@@ -52,6 +52,6 @@ export async function youtubeGetLikedVideos(req: Request, res: Response) {
         }
     );
     if (ret) {
-        return res.status(200).json( ret.data )
+        return res.status(200).json(ret.data)
     }
 }
