@@ -12,7 +12,7 @@ import logger from '@shared/Logger';
 import passport from 'passport';
 import session from "express-session"
 import { Schema, model, connect, Error } from 'mongoose';
-import { Profile, Strategy } from 'passport-spotify';
+import { Strategy } from 'passport-spotify';
 const SpotifyStrategy = Strategy;
 require('dotenv').config();
 
@@ -20,8 +20,6 @@ const CLIENT_ID = process.env.CLIENT_ID ? process.env.CLIENT_ID : "";
 const CLIENT_SECRET = process.env.CLIENT_SECRET ? process.env.CLIENT_SECRET : "";
 const OAUTH2_CALLBACK_URL = process.env.OAUTH2_CALLBACK_URL ? process.env.OAUTH2_CALLBACK_URL : "";
 const MONGODB_CONNECT_STRING = process.env.MONGODB_CONNECT_STRING || "";
-
-console.log(CLIENT_ID)
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
@@ -57,8 +55,9 @@ passport.use(
                 console.log(error)
             }
 
+            console.log("Connected to MongoDB!")
             let result = await SpoUserModel.findOne({ profile_id: profile.id }).exec()
-            console.log(result)
+            console.log(`Find one user by profile_id result: ${result}`)
             if (!result) {
                 console.log("New Spotify User appears. Adding to Database.")
                 const doc = new SpoUserModel({
@@ -73,18 +72,12 @@ passport.use(
             } else {
                 let spoUser: SpoUser = { profile_id: result.profile_id, accessToken: result.accessToken, refreshToken: result.refreshToken }
                 if (accessToken !== spoUser.accessToken) {
-                    console.log("Updated access token")
+                    console.log("Updated access token and refresh token!")
                     spoUser.accessToken = accessToken;
                     spoUser.refreshToken = refreshToken;
-                    const doc = new SpoUserModel({
-                        profile_id: profile.id,
-                        accessToken,
-                        refreshToken,
-                    });
-                    // await doc.save();
                     const updatedResult = await SpoUserModel.updateOne({ profile_id: spoUser.profile_id }, { accessToken: spoUser.accessToken, refreshToken: spoUser.refreshToken })
                 }
-                console.log(spoUser)
+                console.log(`Following SpoUser object is returned: ${spoUser}`)
                 done(null, spoUser)
             }
         }
