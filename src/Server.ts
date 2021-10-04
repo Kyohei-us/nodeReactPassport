@@ -12,15 +12,12 @@ import logger from '@shared/Logger';
 import passport from 'passport';
 import session from "express-session"
 import { Schema, model, connect, Error } from 'mongoose';
-import { Strategy } from 'passport-spotify';
-const SpotifyStrategy = Strategy;
+// import { Strategy } from 'passport-spotify';
+// const SpotifyStrategy = Strategy;
 import { Strategy as GStrategy } from 'passport-google-oauth20';
 const GoogleStrategy = GStrategy;
 require('dotenv').config();
 
-const CLIENT_ID = process.env.CLIENT_ID ? process.env.CLIENT_ID : "";
-const CLIENT_SECRET = process.env.CLIENT_SECRET ? process.env.CLIENT_SECRET : "";
-const OAUTH2_CALLBACK_URL = process.env.OAUTH2_CALLBACK_URL ? process.env.OAUTH2_CALLBACK_URL : "";
 const MONGODB_CONNECT_STRING = process.env.MONGODB_CONNECT_STRING || "";
 
 const YT_CLIENT_ID = process.env.YT_CLIENT_ID || "";
