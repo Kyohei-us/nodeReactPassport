@@ -87,7 +87,7 @@ export async function getArtistTopTracks(req: Request, res: Response) {
         refreshToken: reqUser.refreshToken
     });
     let artistId = req.params.artist_id;
-    let country = req.params.country ? req.params.country : "JP";
+    let country = req.query.country as string ? req.query.country as string : "JP";
     // Get artist's top tracks.
     spotifyApi.getArtistTopTracks(artistId, country)
         .then(function (data) {

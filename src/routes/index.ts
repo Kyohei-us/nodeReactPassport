@@ -39,7 +39,7 @@ spotifyRouter.get(
 );
 spotifyRouter.get('/current', ensureAuthenticated, getCurrent);
 spotifyRouter.get('/searchArtist/:query', ensureAuthenticated, searchArtist)
-spotifyRouter.get('/getArtistTopTracks/:artist_id/:country', ensureAuthenticated, getArtistTopTracks)
+spotifyRouter.get('/getArtistTopTracks/:artist_id', ensureAuthenticated, getArtistTopTracks)
 
 
 // Export the base-router
