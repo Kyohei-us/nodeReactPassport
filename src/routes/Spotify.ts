@@ -62,3 +62,27 @@ export async function searchArtist(req: Request, res: Response) {
             return res.status(404).json({ message: "Not Found" })
         });
 }
+
+export async function getArtistTopTracks(req: Request, res: Response) {
+    if (!req.params.artist_id) return;
+    if (!req.user) return;
+    let reqUser = req.user as SpoUser;
+    let spotifyApi = new SpotifyWebApi({
+        clientId: CLIENT_ID,
+        clientSecret: CLIENT_SECRET,
+        redirectUri: OAUTH2_CALLBACK_URL,
+        accessToken: reqUser.accessToken,
+        refreshToken: reqUser.refreshToken
+    });
+    let artistId = req.params.artist_id;
+    let country = req.params.country ? req.params.country : "JP";
+    // Get artist's top tracks.
+    spotifyApi.getArtistTopTracks(artistId, country)
+        .then(function (data) {
+            console.log(`Got artist's top tracks by ${artistId}`);
+            return res.status(OK).json({ body: data.body })
+        }, function (err) {
+            console.log('Something went wrong!', err);
+            return res.status(404).json({ message: "Not Found" })
+        });
+}

@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 import { getAllUsers, addOneUser, updateOneUser, deleteOneUser } from './Users';
-import { getCurrent, searchArtist } from './Spotify';
+import { getArtistTopTracks, getCurrent, searchArtist } from './Spotify';
 import passport from 'passport';
 
 // User-route
@@ -39,6 +39,7 @@ spotifyRouter.get(
 );
 spotifyRouter.get('/current', ensureAuthenticated, getCurrent);
 spotifyRouter.get('/searchArtist/:query', ensureAuthenticated, searchArtist)
+spotifyRouter.get('/getArtistTopTracks/:artist_id/:country', ensureAuthenticated, getArtistTopTracks)
 
 
 // Export the base-router
