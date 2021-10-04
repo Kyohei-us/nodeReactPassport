@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response, Router } from 'express';
 import { getAllUsers, addOneUser, updateOneUser, deleteOneUser } from './Users';
 // import { getArtistTopTracks, getCurrent, searchArtist } from './Spotify';
 import passport from 'passport';
-import { googleAuthCallback, youtubeGetPlaylists } from './Youtube';
+import { googleAuthCallback, youtubeGetChannel, youtubeGetLikedVideos, youtubeGetPlaylists } from './Youtube';
 
 // User-route
 const userRouter = Router();
@@ -52,6 +52,8 @@ youtubeRouter.get('/auth/youtube/callback', passport.authenticate('google', {
     failureRedirect: '/'
 }), googleAuthCallback);
 youtubeRouter.get('/getPlaylists', ensureAuthenticated, youtubeGetPlaylists)
+youtubeRouter.get('/getChannels', ensureAuthenticated, youtubeGetChannel)
+youtubeRouter.get('/getLikedVideos', ensureAuthenticated, youtubeGetLikedVideos)
 
 
 // Export the base-router
