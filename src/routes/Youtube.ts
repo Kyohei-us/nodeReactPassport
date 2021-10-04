@@ -19,7 +19,39 @@ export async function youtubeGetPlaylists(req: Request, res: Response) {
         }
     );
     if (ret) {
-        console.log(ret)
-        return res.status(200).json({ message: "ok" })
+        return res.status(200).json( ret.data )
+    }
+}
+
+
+export async function youtubeGetChannel(req: Request, res: Response) {
+    let reqUser = req.user as YTUser;
+    let accessToken = reqUser.accessToken;
+    let part = "contentDetails"
+    let playlistURL = `https://www.googleapis.com/youtube/v3/channels?part=${part}&mine=true`;
+    let ret = await axios.get(
+        playlistURL,
+        {
+            headers: { Authorization: `Bearer ${accessToken}` }
+        }
+    );
+    if (ret) {
+        return res.status(200).json( ret.data )
+    }
+}
+
+export async function youtubeGetLikedVideos(req: Request, res: Response) {
+    let reqUser = req.user as YTUser;
+    let accessToken = reqUser.accessToken;
+    let part = "contentDetails"
+    let playlistURL = `https://www.googleapis.com/youtube/v3/videos?part=${part}&part=snippet&myRating=like`;
+    let ret = await axios.get(
+        playlistURL,
+        {
+            headers: { Authorization: `Bearer ${accessToken}` }
+        }
+    );
+    if (ret) {
+        return res.status(200).json( ret.data )
     }
 }
