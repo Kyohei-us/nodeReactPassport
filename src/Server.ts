@@ -76,15 +76,15 @@ passport.use(new GoogleStrategy({
             console.log(YTUser)
             cb(null, YTUser)
         } else {
-            let spoUser: YTUser = { profile_id: result.profile_id, accessToken: result.accessToken, refreshToken: result.refreshToken }
-            if (accessToken !== spoUser.accessToken) {
+            let YTUser: YTUser = { profile_id: result.profile_id, accessToken: result.accessToken, refreshToken: result.refreshToken }
+            if (accessToken !== YTUser.accessToken) {
                 console.log("Updated access token and refresh token!")
-                spoUser.accessToken = accessToken;
-                spoUser.refreshToken = refreshToken;
-                const updatedResult = await YTUserModel.updateOne({ profile_id: spoUser.profile_id }, { accessToken: spoUser.accessToken, refreshToken: spoUser.refreshToken })
+                YTUser.accessToken = accessToken;
+                YTUser.refreshToken = refreshToken;
+                const updatedResult = await YTUserModel.updateOne({ profile_id: YTUser.profile_id }, { accessToken: YTUser.accessToken, refreshToken: YTUser.refreshToken })
             }
-            console.log(`Following SpoUser object is returned: ${spoUser}`)
-            cb(null, spoUser)
+            console.log(`Following YTUser object is returned: ${YTUser}`)
+            cb(null, YTUser)
         }
     }
 ));
@@ -120,6 +120,10 @@ if (process.env.NODE_ENV === 'production') {
 
 // Add APIs
 app.use('/api', BaseRouter);
+
+app.get('/login', function (req: Request, res: Response) {
+    res.sendFile('login.html', { root: viewsDir })
+})
 
 // Print API errors
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
