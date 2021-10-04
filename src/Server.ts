@@ -14,12 +14,18 @@ import session from "express-session"
 import { Schema, model, connect, Error } from 'mongoose';
 import { Strategy } from 'passport-spotify';
 const SpotifyStrategy = Strategy;
+import { Strategy as GStrategy } from 'passport-google-oauth20';
+const GoogleStrategy = GStrategy;
 require('dotenv').config();
 
 const CLIENT_ID = process.env.CLIENT_ID ? process.env.CLIENT_ID : "";
 const CLIENT_SECRET = process.env.CLIENT_SECRET ? process.env.CLIENT_SECRET : "";
 const OAUTH2_CALLBACK_URL = process.env.OAUTH2_CALLBACK_URL ? process.env.OAUTH2_CALLBACK_URL : "";
 const MONGODB_CONNECT_STRING = process.env.MONGODB_CONNECT_STRING || "";
+
+const YT_CLIENT_ID = process.env.YT_CLIENT_ID || "";
+const YT_CLIENT_SECRET = process.env.YT_CLIENT_SECRET || ""
+const YT_REDIRECT_URL = process.env.YT_REDIRECT_URL || ""
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
@@ -30,59 +36,61 @@ const { BAD_REQUEST } = StatusCodes;
  *                              Set basic express settings
  ***********************************************************************************/
 
-export type SpoUser = { profile_id: string; accessToken: string; refreshToken: string; };
+export type YTUser = { profile_id: string; accessToken: string; refreshToken: string; };
 
-const schema = new Schema<SpoUser>({
+const schema = new Schema<YTUser>({
     profile_id: { type: String, required: true },
     accessToken: { type: String, required: true },
-    refreshToken: { type: String, required: true }
+    refreshToken: { type: String }
 })
 
-const SpoUserModel = model<SpoUser>('SpoUser', schema);
+const YTUserModel = model<YTUser>('YTUser', schema);
 
-passport.use(
-    new SpotifyStrategy(
-        {
-            clientID: CLIENT_ID,
-            clientSecret: CLIENT_SECRET,
-            callbackURL: OAUTH2_CALLBACK_URL,
-        },
-        async function (accessToken, refreshToken, expires_in, profile, done) {
-            console.log("authing")
-            try {
-                await connect(MONGODB_CONNECT_STRING);
-            } catch (error) {
-                console.log(error)
-            }
-
-            console.log("Connected to MongoDB!")
-            let result = await SpoUserModel.findOne({ profile_id: profile.id }).exec()
-            console.log(`Find one user by profile_id result: ${result}`)
-            if (!result) {
-                console.log("New Spotify User appears. Adding to Database.")
-                const doc = new SpoUserModel({
-                    profile_id: profile.id,
-                    accessToken,
-                    refreshToken,
-                });
-                let spoUser: SpoUser = { profile_id: profile.id, accessToken, refreshToken }
-                await doc.save();
-                console.log(spoUser)
-                done(null, spoUser)
-            } else {
-                let spoUser: SpoUser = { profile_id: result.profile_id, accessToken: result.accessToken, refreshToken: result.refreshToken }
-                if (accessToken !== spoUser.accessToken) {
-                    console.log("Updated access token and refresh token!")
-                    spoUser.accessToken = accessToken;
-                    spoUser.refreshToken = refreshToken;
-                    const updatedResult = await SpoUserModel.updateOne({ profile_id: spoUser.profile_id }, { accessToken: spoUser.accessToken, refreshToken: spoUser.refreshToken })
-                }
-                console.log(`Following SpoUser object is returned: ${spoUser}`)
-                done(null, spoUser)
-            }
+passport.use(new GoogleStrategy({
+    clientID: YT_CLIENT_ID,
+    clientSecret: YT_CLIENT_SECRET,
+    callbackURL: YT_REDIRECT_URL
+},
+    async function (accessToken: string, refreshToken: string, profile: any, cb: Function) {
+        console.log("authing")
+        try {
+            await connect(MONGODB_CONNECT_STRING);
+        } catch (error) {
+            console.log(error)
         }
-    )
-);
+
+        console.log("Connected to MongoDB!")
+        console.log(profile)
+        let result = await YTUserModel.findOne({ profile_id: profile.id }).exec()
+        console.log(`Find one user by profile_id result: ${result}`)
+        if (!result) {
+            console.log("New Spotify User appears. Adding to Database.")
+            const doc = new YTUserModel({
+                profile_id: profile.id,
+                accessToken,
+                refreshToken,
+            });
+            let YTUser: YTUser = {
+                profile_id: profile.id,
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+            }
+            await doc.save();
+            console.log(YTUser)
+            cb(null, YTUser)
+        } else {
+            let spoUser: YTUser = { profile_id: result.profile_id, accessToken: result.accessToken, refreshToken: result.refreshToken }
+            if (accessToken !== spoUser.accessToken) {
+                console.log("Updated access token and refresh token!")
+                spoUser.accessToken = accessToken;
+                spoUser.refreshToken = refreshToken;
+                const updatedResult = await YTUserModel.updateOne({ profile_id: spoUser.profile_id }, { accessToken: spoUser.accessToken, refreshToken: spoUser.refreshToken })
+            }
+            console.log(`Following SpoUser object is returned: ${spoUser}`)
+            cb(null, spoUser)
+        }
+    }
+));
 
 passport.serializeUser(function (user, done) {
     done(null, user);
