@@ -1,12 +1,10 @@
 import StatusCodes from 'http-status-codes';
 import { Request, Response } from 'express';
 
-import UserDao from '@daos/User/UserDao.mock';
 import SpotifyWebApi from 'spotify-web-api-node';
 import { SpoUser } from '@server';
 
-const userDao = new UserDao();
-const { BAD_REQUEST, CREATED, OK } = StatusCodes;
+const { OK } = StatusCodes;
 
 const CLIENT_ID = process.env.CLIENT_ID || ""
 const CLIENT_SECRET = process.env.CLIENT_SECRET || ""
@@ -41,6 +39,13 @@ export async function getCurrent(req: Request, res: Response) {
     return res.status(404).json({ message: "Not Found" })
 }
 
+/**
+ * Search artist by artist name.
+ * 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 export async function searchArtist(req: Request, res: Response) {
     if (!req.params.query) return;
     if (!req.user) return;
@@ -63,6 +68,13 @@ export async function searchArtist(req: Request, res: Response) {
         });
 }
 
+/**
+ * Get artist by artist_id.
+ * 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 export async function getArtistTopTracks(req: Request, res: Response) {
     if (!req.params.artist_id) return;
     if (!req.user) return;
