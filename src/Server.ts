@@ -11,6 +11,7 @@ import BaseRouter from './routes';
 import logger from '@shared/Logger';
 import passport from 'passport';
 import session from "express-session"
+import { Schema, model, connect, Error } from 'mongoose';
 import { Profile, Strategy } from 'passport-spotify';
 const SpotifyStrategy = Strategy;
 require('dotenv').config();
@@ -18,6 +19,7 @@ require('dotenv').config();
 const CLIENT_ID = process.env.CLIENT_ID ? process.env.CLIENT_ID : "";
 const CLIENT_SECRET = process.env.CLIENT_SECRET ? process.env.CLIENT_SECRET : "";
 const OAUTH2_CALLBACK_URL = process.env.OAUTH2_CALLBACK_URL ? process.env.OAUTH2_CALLBACK_URL : "";
+const MONGODB_CONNECT_STRING = process.env.MONGODB_CONNECT_STRING || "";
 
 console.log(CLIENT_ID)
 
@@ -30,7 +32,15 @@ const { BAD_REQUEST } = StatusCodes;
  *                              Set basic express settings
  ***********************************************************************************/
 
-export type SpoUser = { profile: Profile; accessToken: string; refreshToken: string; };
+export type SpoUser = { profile_id: string; accessToken: string; refreshToken: string; };
+
+const schema = new Schema<SpoUser>({
+    profile_id: { type: String, required: true },
+    accessToken: { type: String, required: true },
+    refreshToken: { type: String, required: true }
+})
+
+const SpoUserModel = model<SpoUser>('SpoUser', schema);
 
 passport.use(
     new SpotifyStrategy(
@@ -39,10 +49,44 @@ passport.use(
             clientSecret: CLIENT_SECRET,
             callbackURL: OAUTH2_CALLBACK_URL,
         },
-        function (accessToken, refreshToken, expires_in, profile, done) {
+        async function (accessToken, refreshToken, expires_in, profile, done) {
             console.log("authing")
-            let spoUser: SpoUser = { profile, accessToken, refreshToken }
-            done(null, spoUser)
+            try {
+                await connect(MONGODB_CONNECT_STRING);
+            } catch (error) {
+                console.log(error)
+            }
+
+            let result = await SpoUserModel.findOne({ profile_id: profile.id }).exec()
+            console.log(result)
+            if (!result) {
+                console.log("New Spotify User appears. Adding to Database.")
+                const doc = new SpoUserModel({
+                    profile_id: profile.id,
+                    accessToken,
+                    refreshToken,
+                });
+                let spoUser: SpoUser = { profile_id: profile.id, accessToken, refreshToken }
+                await doc.save();
+                console.log(spoUser)
+                done(null, spoUser)
+            } else {
+                let spoUser: SpoUser = { profile_id: result.profile_id, accessToken: result.accessToken, refreshToken: result.refreshToken }
+                if (accessToken !== spoUser.accessToken) {
+                    console.log("Updated access token")
+                    spoUser.accessToken = accessToken;
+                    spoUser.refreshToken = refreshToken;
+                    const doc = new SpoUserModel({
+                        profile_id: profile.id,
+                        accessToken,
+                        refreshToken,
+                    });
+                    // await doc.save();
+                    const updatedResult = await SpoUserModel.updateOne({ profile_id: spoUser.profile_id }, { accessToken: spoUser.accessToken, refreshToken: spoUser.refreshToken })
+                }
+                console.log(spoUser)
+                done(null, spoUser)
+            }
         }
     )
 );
