@@ -83,7 +83,8 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-oauth2": "^1.6.1",
     "passport-spotify": "^2.0.0",
-    "spotify-web-api-node": "^5.0.2"
+    "spotify-web-api-node": "^5.0.2",
+    "youtube-dl-exec": "^1.2.14"
   },
   "devDependencies": {
     "@types/command-line-args": "^5.2.0",
