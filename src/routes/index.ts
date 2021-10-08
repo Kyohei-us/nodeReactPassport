@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response, Router } from 'express';
 import { getAllUsers, addOneUser, updateOneUser, deleteOneUser } from './Users';
 // import { getArtistTopTracks, getCurrent, searchArtist } from './Spotify';
 import passport from 'passport';
-import { googleAuthCallback, youtubeGetChannel, youtubeGetDLURLWrapper, youtubeGetLikedVideosWrapper, youtubeGetPlaylists, youtubeListVideoDLURLs } from './Youtube';
+import { googleAuthCallback, youtubeGetDLURLWrapper, youtubeGetLikedVideosWrapper, youtubeGetPlaylists, youtubeListVideoDLURLs, youtubeGetChannel, youtubeGetTopPopularVideosForChannelById } from './Youtube';
 
 // User-route
 const userRouter = Router();
@@ -22,6 +22,7 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
         return next();
     }
     res.redirect('/login');
+    alert("Login to proceed!")
 }
 
 // Spotify-route
@@ -56,7 +57,7 @@ youtubeRouter.get('/getChannels', ensureAuthenticated, youtubeGetChannel)
 youtubeRouter.get('/getLikedVideos', ensureAuthenticated, youtubeGetLikedVideosWrapper)
 youtubeRouter.get('/getURL/:video_id', ensureAuthenticated, youtubeGetDLURLWrapper);
 youtubeRouter.get('/listLiked', ensureAuthenticated, youtubeListVideoDLURLs)
-
+youtubeRouter.get('/getPopularVideosByChannelId/:channel_id', ensureAuthenticated, youtubeGetTopPopularVideosForChannelById);
 
 // Export the base-router
 const baseRouter = Router();

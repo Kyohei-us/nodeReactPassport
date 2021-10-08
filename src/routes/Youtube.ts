@@ -119,3 +119,19 @@ export async function youtubeGetDLURLWrapper(req: Request, res: Response) {
         }
     }
 }
+
+export async function youtubeGetTopPopularVideosForChannelById(req: Request, res: Response) {
+    let reqUser = req.user as YTUser;
+    let accessToken = reqUser.accessToken;
+    let channelId = req.params.channel_id;
+    let url = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=25&order=viewCount`;
+    let ret = await axios.get(
+        url,
+        {
+            headers: { Authorization: `Bearer ${accessToken}` }
+        }
+    );
+    if (ret) {
+        return res.status(200).json(ret.data)
+    }
+}
