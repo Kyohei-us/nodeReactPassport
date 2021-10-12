@@ -55,8 +55,8 @@ youtubeRouter.get('/auth/youtube/callback', passport.authenticate('google', {
 youtubeRouter.get('/getPlaylists', ensureAuthenticated, youtubeGetPlaylists)
 youtubeRouter.get('/getChannels', ensureAuthenticated, youtubeGetChannel)
 youtubeRouter.get('/getLikedVideos', ensureAuthenticated, youtubeGetLikedVideosWrapper)
-youtubeRouter.get('/getURL/:video_id', ensureAuthenticated, youtubeGetDLURLWrapper);
-youtubeRouter.get('/listLiked', ensureAuthenticated, youtubeListVideoDLURLs)
+youtubeRouter.get('/getURL/:video_id', ensureAuthenticated, youtubeGetDLURLWrapper); // return html
+youtubeRouter.get('/listLiked', ensureAuthenticated, youtubeListVideoDLURLs) // return html
 youtubeRouter.get('/getPopularVideosByChannelId/:channel_id', ensureAuthenticated, youtubeGetTopPopularVideosForChannelById);
 
 // Export the base-router

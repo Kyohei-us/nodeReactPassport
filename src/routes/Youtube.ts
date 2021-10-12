@@ -41,6 +41,13 @@ export async function youtubeGetChannel(req: Request, res: Response) {
     }
 }
 
+/**
+ * Get my liked videos.
+ * 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 async function youtubeGetLikedVideos(req: Request, res: Response) {
     let reqUser = req.user as YTUser;
     let accessToken = reqUser.accessToken;
@@ -56,6 +63,13 @@ async function youtubeGetLikedVideos(req: Request, res: Response) {
     return ret;
 }
 
+/**
+ * Get my liked videos and return as express response.
+ * 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 export async function youtubeGetLikedVideosWrapper(req: Request, res: Response) {
     let ret = await youtubeGetLikedVideos(req, res);
     if (ret) {
@@ -63,6 +77,12 @@ export async function youtubeGetLikedVideosWrapper(req: Request, res: Response) 
     }
 }
 
+/**
+ * Return video download links as html.
+ * 
+ * @param req 
+ * @param res 
+ */
 export async function youtubeListVideoDLURLs(req: Request, res: Response) {
     const myLikedVideos = await youtubeGetLikedVideos(req, res);
     console.log(myLikedVideos.data)
@@ -83,14 +103,19 @@ export async function youtubeListVideoDLURLs(req: Request, res: Response) {
     let html = `<html><body>`
     for (let i = 0; i < videoDLURLList.length; i++) {
         const element = videoDLURLList[i];
-        let atag = `<a href="${element}">DL</a>`
+        let atag = `<a href="${element}">DL</a><br />`
         html += atag;
     }
     html += `</body></html>`;
     res.send(html);
-    res.redirect('/')
 }
 
+/**
+ * Get video download url by video id.
+ * 
+ * @param youtubeVideoId 
+ * @returns 
+ */
 async function youtubeGetDLURL(youtubeVideoId: string) {
     const output: any = await youtubedl(`https://youtu.be/${youtubeVideoId}`, {
         format: "best",
@@ -100,6 +125,12 @@ async function youtubeGetDLURL(youtubeVideoId: string) {
     return output;
 }
 
+/**
+ * Get video download url, and return as html.
+ * 
+ * @param req 
+ * @param res 
+ */
 export async function youtubeGetDLURLWrapper(req: Request, res: Response) {
     let youtubeVideoId = req.params.video_id as string ? req.params.video_id as string : "";
     if (!youtubeVideoId) {
@@ -120,6 +151,13 @@ export async function youtubeGetDLURLWrapper(req: Request, res: Response) {
     }
 }
 
+/**
+ * Get Popular videos for channal by channel id.
+ * 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 export async function youtubeGetTopPopularVideosForChannelById(req: Request, res: Response) {
     let reqUser = req.user as YTUser;
     let accessToken = reqUser.accessToken;
