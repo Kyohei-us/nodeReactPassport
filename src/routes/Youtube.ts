@@ -78,6 +78,18 @@ export async function youtubeGetLikedVideosWrapper(req: Request, res: Response) 
 }
 
 /**
+ * 
+ * @param req 
+ * @param res 
+ */
+export async function youtubeGetLikedVideosEjs(req: Request, res: Response) {
+    let ret = await youtubeGetLikedVideos(req, res);
+    if (ret) {
+        return res.render('getLikedVideos', { "likedVideos": ret.data.items });
+    }
+}
+
+/**
  * Return video download links as html.
  * 
  * @param req 
@@ -108,6 +120,30 @@ export async function youtubeListVideoDLURLs(req: Request, res: Response) {
     }
     html += `</body></html>`;
     res.send(html);
+}
+
+export async function youtubeListVideoDLURLSEjs(req: Request, res: Response) {
+    const myLikedVideos = await youtubeGetLikedVideos(req, res);
+    console.log(myLikedVideos.data)
+    let videoDLURLList: any[] = []
+    for (let i = 0; i < myLikedVideos.data.items.length; i++) {
+        const element = myLikedVideos.data.items[i];
+        let output = await youtubeGetDLURL(`${element.id}`);
+        if (typeof output === 'string') {
+            let url: string = output.split('\n')[0]
+            if (!url) {
+                res.redirect('/')
+            }
+            let videoDLURLListItem = {
+                url: url,
+                likedVideoElement: element,
+            }
+            videoDLURLList.push(videoDLURLListItem);
+        } else {
+            res.redirect('/')
+        }
+    }
+    res.render("listLikedVideosURL", { likedVideosDLURLList: videoDLURLList })
 }
 
 /**
