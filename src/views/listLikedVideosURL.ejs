@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Liked Videos</title>
+</head>
+ 
+<body>
+    <ul>
+        <% likedVideosDLURLList.forEach((likedVideoItem)=>{%>
+        <li>
+            <p>Id: <%=likedVideoItem.likedVideoElement.id%></p>
+            <p>Title: <u><%=likedVideoItem.likedVideoElement.snippet.title%></u></p>
+            <p>Posted by <u><%=likedVideoItem.likedVideoElement.snippet.channelTitle%></u></p>
+            <a href=<%=likedVideoItem.url%>>
+                <img src=<%=likedVideoItem.likedVideoElement.snippet.thumbnails.default.url%> />
+            </a>
+        </li>
+        <%});%>
+    </ul>
+</body>
+ 
+</html>
