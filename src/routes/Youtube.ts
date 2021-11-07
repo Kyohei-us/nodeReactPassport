@@ -3,6 +3,12 @@ import axios, { AxiosRequestConfig } from "axios";
 import { Request, Response } from "express";
 import youtubedl, { YtResponse } from "youtube-dl-exec"
 
+/**
+ * Reference https://developers.google.com/youtube/v3/docs
+ * 
+ * @param req 
+ * @param res 
+ */
 export async function googleAuthCallback(req: Request, res: Response) {
     console.log(req.params.code);
     res.redirect('/')
@@ -199,6 +205,29 @@ export async function youtubeGetTopPopularVideosForChannelById(req: Request, res
     let accessToken = reqUser.accessToken;
     let channelId = req.params.channel_id;
     let url = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=25&order=viewCount`;
+    let ret = await axios.get(
+        url,
+        {
+            headers: { Authorization: `Bearer ${accessToken}` }
+        }
+    );
+    if (ret) {
+        return res.status(200).json(ret.data)
+    }
+}
+
+/**
+ * Get subscriptions of the authenticated user
+ * 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
+export async function youtubeGetSubscriptions(req: Request, res: Response) {
+    let reqUser = req.user as YTUser;
+    let accessToken = reqUser.accessToken;
+    let part = req.query.part ? req.query.part : "snippet"
+    let url = `https://youtube.googleapis.com/youtube/v3/subscriptions?part=${part}&mine=true`
     let ret = await axios.get(
         url,
         {
