@@ -21,7 +21,6 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
     if (req.isAuthenticated()) {
         return next();
     }
-    req.session.returnTo = req.originalUrl;
     res.redirect('/login');
     alert("Login to proceed!")
 }
@@ -47,9 +46,13 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
 
 // Youtube-route
 const youtubeRouter = Router();
-youtubeRouter.get('/auth/youtube', passport.authenticate('google', {
-    scope: ['profile', 'https://www.googleapis.com/auth/youtube.readonly']
-}));
+youtubeRouter.get('/auth/youtube', (req, res) => {
+    req.session.returnTo = req.get('Referrer');
+    console.log("return to:", req.session.returnTo)
+    passport.authenticate('google', {
+        scope: ['profile', 'https://www.googleapis.com/auth/youtube.readonly']
+    })
+});
 youtubeRouter.get('/auth/youtube/callback', passport.authenticate('google', {
     failureRedirect: '/'
 }), googleAuthCallback);
