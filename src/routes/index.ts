@@ -21,6 +21,7 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
     if (req.isAuthenticated()) {
         return next();
     }
+    req.session.returnTo = req.originalUrl;
     res.redirect('/login');
     alert("Login to proceed!")
 }
