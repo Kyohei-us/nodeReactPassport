@@ -25,6 +25,12 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
     alert("Login to proceed!")
 }
 
+function saveReturnTo(req: Request, res: Response, next: NextFunction) {
+    req.session.returnTo = req.get('Referrer');
+    console.log("return to:", req.session.returnTo);
+    return next()
+}
+
 // Spotify-route
 // const spotifyRouter = Router();
 // spotifyRouter.get('/auth/spotify', passport.authenticate('spotify', {
@@ -46,13 +52,9 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
 
 // Youtube-route
 const youtubeRouter = Router();
-youtubeRouter.get('/auth/youtube', (req, res) => {
-    req.session.returnTo = req.get('Referrer');
-    console.log("return to:", req.session.returnTo)
-    passport.authenticate('google', {
-        scope: ['profile', 'https://www.googleapis.com/auth/youtube.readonly']
-    })
-});
+youtubeRouter.get('/auth/youtube', saveReturnTo, passport.authenticate('google', {
+    scope: ['profile', 'https://www.googleapis.com/auth/youtube.readonly']
+}));
 youtubeRouter.get('/auth/youtube/callback', passport.authenticate('google', {
     failureRedirect: '/'
 }), googleAuthCallback);
