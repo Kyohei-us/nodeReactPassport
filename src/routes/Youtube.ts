@@ -11,7 +11,9 @@ import youtubedl, { YtResponse } from "youtube-dl-exec"
  */
 export async function googleAuthCallback(req: Request, res: Response) {
     console.log(req.params.code);
-    res.redirect('/')
+    let back = req.header('Referer') || '/'
+    console.log(back)
+    res.redirect(back)
 }
 
 export async function youtubeGetPlaylists(req: Request, res: Response) {
