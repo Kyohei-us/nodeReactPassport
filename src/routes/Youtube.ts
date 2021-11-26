@@ -69,16 +69,13 @@ async function youtubeGetLikedVideos(req: Request, res: Response) {
     let part = "contentDetails"
     let playlistURL = `https://www.googleapis.com/youtube/v3/videos?part=${part}&part=snippet&myRating=like`;
     let config: AxiosRequestConfig = {
-        headers: {
-            Authorization: `Bearer ${accessToken}`, Accept: "application/json",
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-        }
+        headers: { Authorization: `Bearer ${accessToken}` }
     }
     let ret = await axios.get(
         playlistURL,
         config
     );
+    console.log("get Liked videos:", ret)
     return ret;
 }
 
