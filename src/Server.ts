@@ -15,6 +15,7 @@ import { Schema, model, connect, Error } from 'mongoose';
 // import { Strategy } from 'passport-spotify';
 // const SpotifyStrategy = Strategy;
 import { Strategy as GStrategy } from 'passport-google-oauth20';
+import cors from 'cors';
 const GoogleStrategy = GStrategy;
 require('dotenv').config();
 
@@ -103,6 +104,7 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cors)
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
