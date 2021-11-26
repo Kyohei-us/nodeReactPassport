@@ -12,6 +12,7 @@ import youtubedl, { YtResponse } from "youtube-dl-exec"
 export async function googleAuthCallback(req: Request, res: Response) {
     console.log("googleAuthCallback is called")
     // console.log(req.params.code);
+    console.log("user:", req.user)
     res.redirect("https://nifty-johnson-900cd2.netlify.app");
 }
 
