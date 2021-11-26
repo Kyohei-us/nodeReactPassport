@@ -71,11 +71,12 @@ async function youtubeGetLikedVideos(req: Request, res: Response) {
     let config: AxiosRequestConfig = {
         headers: { Authorization: `Bearer ${accessToken}` }
     }
+    console.log("trying to get liked videos")
     let ret = await axios.get(
         playlistURL,
         config
     );
-    console.log("get Liked videos:", ret)
+    console.log("ret:", ret)
     return ret;
 }
 
