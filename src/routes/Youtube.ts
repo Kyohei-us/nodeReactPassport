@@ -14,6 +14,7 @@ export async function googleAuthCallback(req: Request, res: Response) {
     console.log(req.params.code);
     res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
+    console.log("returning to...", req.session.returnTo)
     res.redirect(req.session.returnTo || '/');
     req.session.returnTo = undefined;
     // res.redirect('/')
