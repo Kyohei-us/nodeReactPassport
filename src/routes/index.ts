@@ -30,6 +30,12 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
     res.redirect('/api/youtube/auth/youtube')
 }
 
+function auth(req: Request, res: Response, next: NextFunction) {
+    res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    return next()
+}
+
 // Spotify-route
 // const spotifyRouter = Router();
 // spotifyRouter.get('/auth/spotify', passport.authenticate('spotify', {
@@ -51,10 +57,10 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
 
 // Youtube-route
 const youtubeRouter = Router();
-youtubeRouter.get('/auth/youtube', passport.authenticate('google', {
+youtubeRouter.get('/auth/youtube', auth, passport.authenticate('google', {
     scope: ['profile', 'https://www.googleapis.com/auth/youtube.readonly']
 }));
-youtubeRouter.get('/auth/youtube/callback', passport.authenticate('google', {
+youtubeRouter.get('/auth/youtube/callback', auth, passport.authenticate('google', {
     failureRedirect: '/',
     session: true
 }), googleAuthCallback);
