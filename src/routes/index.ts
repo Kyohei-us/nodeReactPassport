@@ -21,8 +21,8 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.redirect('/login');
-    alert("Login to proceed!")
+    // res.redirect('/login');
+    res.redirect('/api/youtube/auth/youtube')
 }
 
 function saveReturnTo(req: Request, res: Response, next: NextFunction) {
