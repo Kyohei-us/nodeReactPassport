@@ -111,7 +111,8 @@ passport.deserializeUser(function (user: Express.User, done) {
 
 app.use(cookieSession({
     name: 'google-auth-session',
-    keys: ['key1', 'key2']
+    keys: ['key1', 'key2'],
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
 
 app.use(passport.initialize());
