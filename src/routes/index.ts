@@ -55,7 +55,7 @@ youtubeRouter.get('/auth/youtube', passport.authenticate('google', {
     scope: ['profile', 'https://www.googleapis.com/auth/youtube.readonly']
 }));
 youtubeRouter.get('/auth/youtube/callback', passport.authenticate('google', {
-    failureRedirect: 'https://nifty-johnson-900cd2.netlify.app',
+    failureRedirect: '/',
     session: true
 }), googleAuthCallback);
 youtubeRouter.get('/getPlaylists', ensureAuthenticated, youtubeGetPlaylists)
