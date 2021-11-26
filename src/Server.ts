@@ -105,8 +105,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors({
-    origin: ['https://nifty-johnson-900cd2.netlify.app', 'https://accounts.google.com'], // allow to server to accept request from different origin
-    methods: "GET, POST, OPTIONS",
+    origin: 'https://nifty-johnson-900cd2.netlify.app', // allow to server to accept request from different origin
+    methods: "GET, POST",
     credentials: true // allow session cookie from browser to pass through
 }))
 
