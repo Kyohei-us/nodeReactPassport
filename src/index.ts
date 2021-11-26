@@ -4,7 +4,8 @@ import logger from '@shared/Logger';
 
 declare module 'express-session' {
     interface SessionData {
-        returnTo: string;
+        profile_id: string;
+        accessToken: string;
     }
 }
 
