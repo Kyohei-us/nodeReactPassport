@@ -18,10 +18,13 @@ userRouter.delete('/delete/:id', deleteOneUser);
 // ];
 
 function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
+    console.log("check if authed")
     if (req.isAuthenticated()) {
+        console.log("authed")
         return next();
     }
     // res.redirect('/login');
+    console.log("not authed")
     res.redirect('/api/youtube/auth/youtube')
 }
 
