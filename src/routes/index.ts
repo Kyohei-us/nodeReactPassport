@@ -19,7 +19,7 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
         return next();
     }
     console.log("not authed")
-    res.redirect('/login')
+    res.send({ message: "You need to login first." })
 }
 
 
