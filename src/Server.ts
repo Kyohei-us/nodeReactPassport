@@ -90,18 +90,12 @@ passport.use(new GoogleStrategy({
     }
 ));
 
-passport.serializeUser(function (user: YTUser, done) {
-    done(null, user.profile_id);
+passport.serializeUser(function (user, done) {
+    done(null, user);
 });
 
-passport.deserializeUser(async function (id: string, done) {
-    let result = await YTUserModel.findOne({ profile_id: id }).exec()
-    if (result) {
-        let YTUser: YTUser = { profile_id: result.profile_id, accessToken: result.accessToken, refreshToken: result.refreshToken }
-        done(null, YTUser);
-    } else {
-        done(new Error("Failed to deserialize an user"));
-    }
+passport.deserializeUser(function (user: Express.User, done) {
+    done(null, user);
 });
 
 app.use(
