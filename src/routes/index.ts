@@ -19,9 +19,7 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
         return next();
     }
     console.log("not authed")
-    res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.redirect('/api/youtube/auth/youtube')
+    res.redirect('/login')
 }
 
 
