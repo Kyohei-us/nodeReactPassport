@@ -10,7 +10,8 @@ import 'express-async-errors';
 import BaseRouter from './routes';
 import logger from '@shared/Logger';
 import passport from 'passport';
-import session from "express-session"
+// import session from "express-session"
+import cookieSession from 'cookie-session';
 import { Schema, model, connect, Error } from 'mongoose';
 // import { Strategy } from 'passport-spotify';
 // const SpotifyStrategy = Strategy;
