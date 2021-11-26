@@ -105,7 +105,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors({
-    origin: "https://nodereactpassport.herokuapp.com", // allow to server to accept request from different origin
+    origin: "https://nifty-johnson-900cd2.netlify.app", // allow to server to accept request from different origin
     methods: "GET, POST",
     credentials: true // allow session cookie from browser to pass through
 }))
