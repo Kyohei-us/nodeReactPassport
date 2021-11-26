@@ -101,7 +101,7 @@ passport.deserializeUser(function (user: Express.User, done) {
 app.use(
     session({
         secret: 'keyboard cat', resave: true, saveUninitialized: true, name: 'session1', cookie: {
-            sameSite: false,
+            sameSite: 'none',
             secure: true,
             maxAge: 1000 * 60 * 60 * 24 * 7 // One Week
         }
