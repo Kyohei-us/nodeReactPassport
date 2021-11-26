@@ -94,8 +94,14 @@ passport.serializeUser(function (user, done) {
     done(null, user);
 });
 
-passport.deserializeUser(function (user: Express.User, done) {
-    done(null, user);
+passport.deserializeUser(async function (id: string, done) {
+    let result = await YTUserModel.findOne({ profile_id: id }).exec()
+    if (result) {
+        let YTUser: YTUser = { profile_id: result.profile_id, accessToken: result.accessToken, refreshToken: result.refreshToken }
+        done(null, YTUser);
+    } else {
+        done(new Error("Failed to deserialize an user"));
+    }
 });
 
 app.use(
@@ -112,6 +118,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors({
     origin: 'https://nifty-johnson-900cd2.netlify.app', // allow to server to accept request from different origin
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true // allow session cookie from browser to pass through
 }))
 
