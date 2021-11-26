@@ -10,7 +10,11 @@ import youtubedl, { YtResponse } from "youtube-dl-exec"
  * @param res 
  */
 export async function googleAuthCallback(req: Request, res: Response) {
+    console.log("googleAuthCallback is called")
     console.log(req.params.code);
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+    res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.redirect(req.session.returnTo || '/');
     req.session.returnTo = undefined;
     // res.redirect('/')
@@ -28,6 +32,9 @@ export async function youtubeGetPlaylists(req: Request, res: Response) {
         }
     );
     if (ret) {
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
     }
 }
@@ -45,6 +52,9 @@ export async function youtubeGetChannel(req: Request, res: Response) {
         }
     );
     if (ret) {
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
     }
 }
@@ -81,6 +91,9 @@ async function youtubeGetLikedVideos(req: Request, res: Response) {
 export async function youtubeGetLikedVideosWrapper(req: Request, res: Response) {
     let ret = await youtubeGetLikedVideos(req, res);
     if (ret) {
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
     }
 }
@@ -214,6 +227,9 @@ export async function youtubeGetTopPopularVideosForChannelById(req: Request, res
         }
     );
     if (ret) {
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
     }
 }
@@ -237,6 +253,9 @@ export async function youtubeGetSubscriptions(req: Request, res: Response) {
         }
     );
     if (ret) {
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
     }
 }
