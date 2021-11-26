@@ -101,7 +101,7 @@ passport.deserializeUser(function (user: Express.User, done) {
 app.use(
     session({
         secret: 'keyboard cat', resave: true, saveUninitialized: true, name: 'session1', cookie: {
-            sameSite: "none",
+            sameSite: false,
             secure: true,
             maxAge: 1000 * 60 * 60 * 24 * 7 // One Week
         }
@@ -112,7 +112,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors({
     origin: 'https://nifty-johnson-900cd2.netlify.app', // allow to server to accept request from different origin
-    methods: "GET, POST",
     credentials: true // allow session cookie from browser to pass through
 }))
 

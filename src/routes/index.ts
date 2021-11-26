@@ -12,41 +12,17 @@ userRouter.put('/update', updateOneUser);
 userRouter.delete('/delete/:id', deleteOneUser);
 
 
-// const scope = [
-//     "user-read-currently-playing",
-//     "user-read-playback-state",
-// ];
-
 function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
     console.log("check if authed")
-    if (req.user || req.isAuthenticated()) {
+    if (req.isAuthenticated()) {
         console.log("authed")
         return next();
     }
-    // res.redirect('/login');
     console.log("not authed")
     res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.redirect('/api/youtube/auth/youtube')
 }
-
-// Spotify-route
-// const spotifyRouter = Router();
-// spotifyRouter.get('/auth/spotify', passport.authenticate('spotify', {
-//     scope: scope,
-// }));
-// spotifyRouter.get(
-//     '/auth/spotify/callback',
-//     passport.authenticate('spotify', { scope: scope, failureRedirect: '/auth/spotify' }),
-//     function (req, res) {
-//         console.log("authed")
-//         // Successful authentication, redirect home.
-//         res.redirect('/');
-//     }
-// );
-// spotifyRouter.get('/current', ensureAuthenticated, getCurrent);
-// spotifyRouter.get('/searchArtist/:query', ensureAuthenticated, searchArtist)
-// spotifyRouter.get('/getArtistTopTracks/:artist_id', ensureAuthenticated, getArtistTopTracks)
 
 
 // Youtube-route
