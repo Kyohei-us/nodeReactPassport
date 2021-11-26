@@ -98,15 +98,20 @@ passport.deserializeUser(function (user: Express.User, done) {
     done(null, user);
 });
 
-app.use(
-    session({
-        secret: 'keyboard cat', resave: true, saveUninitialized: true, name: 'session1', cookie: {
-            sameSite: 'none',
-            secure: true,
-            maxAge: 1000 * 60 * 60 * 24 * 7 // One Week
-        }
-    })
-);
+// app.use(
+//     session({
+//         secret: 'keyboard cat', resave: true, saveUninitialized: true, name: 'session1', cookie: {
+//             sameSite: 'none',
+//             secure: true,
+//             maxAge: 1000 * 60 * 60 * 24 * 7 // One Week
+//         }
+//     })
+// );
+
+app.use(cookieSession({
+    name: 'google-auth-session',
+    keys: ['key1', 'key2']
+}))
 
 app.use(passport.initialize());
 app.use(passport.session());
