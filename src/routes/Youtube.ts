@@ -11,9 +11,7 @@ import youtubedl, { YtResponse } from "youtube-dl-exec"
  */
 export async function googleAuthCallback(req: Request, res: Response) {
     console.log("googleAuthCallback is called")
-    console.log(req.params.code);
-    res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    // console.log(req.params.code);
     res.redirect("https://nifty-johnson-900cd2.netlify.app");
 }
 
