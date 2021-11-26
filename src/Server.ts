@@ -99,12 +99,17 @@ passport.deserializeUser(function (user: Express.User, done) {
 });
 
 app.use(
-    session({ secret: 'keyboard cat', resave: true, saveUninitialized: true })
+    session({ secret: 'keyboard cat', resave: true, saveUninitialized: true, name: 'session1' })
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors())
+app.use(cors({
+    origin: "http://localhost:3001", // allow to server to accept request from different origin
+    methods: "GET, POST",
+    credentials: true // allow session cookie from browser to pass through
+}))
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
