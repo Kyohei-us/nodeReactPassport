@@ -26,7 +26,7 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
     // res.redirect('/login');
     console.log("not authed")
     res.redirect(req.session.returnTo || '/');
-    res.redirect('/login')
+    // res.redirect('/login')
 }
 
 function saveReturnTo(req: Request, res: Response, next: NextFunction) {
