@@ -25,12 +25,20 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
     }
     // res.redirect('/login');
     console.log("not authed")
+    res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.redirect('/api/youtube/auth/youtube')
 }
 
 function saveReturnTo(req: Request, res: Response, next: NextFunction) {
     req.session.returnTo = req.get('Referrer');
     console.log("return to:", req.session.returnTo);
+    return next()
+}
+
+function auth(req: Request, res: Response, next: NextFunction) {
+    res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     return next()
 }
 
@@ -55,10 +63,10 @@ function saveReturnTo(req: Request, res: Response, next: NextFunction) {
 
 // Youtube-route
 const youtubeRouter = Router();
-youtubeRouter.get('/auth/youtube', saveReturnTo, passport.authenticate('google', {
+youtubeRouter.get('/auth/youtube', saveReturnTo, auth, passport.authenticate('google', {
     scope: ['profile', 'https://www.googleapis.com/auth/youtube.readonly']
 }));
-youtubeRouter.get('/auth/youtube/callback', passport.authenticate('google', {
+youtubeRouter.get('/auth/youtube/callback', auth, passport.authenticate('google', {
     failureRedirect: '/'
 }), googleAuthCallback);
 youtubeRouter.get('/getPlaylists', ensureAuthenticated, youtubeGetPlaylists)
