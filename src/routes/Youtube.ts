@@ -88,12 +88,14 @@ async function youtubeGetLikedVideos(req: Request, res: Response) {
  * @returns 
  */
 export async function youtubeGetLikedVideosWrapper(req: Request, res: Response) {
+    console.log("get liked videos wrapper begin...")
     let ret = await youtubeGetLikedVideos(req, res);
     if (ret) {
         res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
         res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
     }
+    return res.status(404).json({ message: "Not Found" })
 }
 
 /**
