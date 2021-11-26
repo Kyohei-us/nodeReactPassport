@@ -14,6 +14,9 @@ userRouter.delete('/delete/:id', deleteOneUser);
 
 function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
     console.log("check if authed")
+    if (req.session.accessToken || req.session.profile_id) {
+        console.log("session got you!")
+    }
     if (req.isAuthenticated()) {
         console.log("authed")
         return next();
