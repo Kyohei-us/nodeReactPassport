@@ -25,7 +25,7 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
     }
     // res.redirect('/login');
     console.log("not authed")
-    res.redirect('/api/youtube/auth/youtube')
+    res.redirect('/login')
 }
 
 function saveReturnTo(req: Request, res: Response, next: NextFunction) {
