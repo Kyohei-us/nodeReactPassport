@@ -99,6 +99,7 @@ passport.deserializeUser(function (user: Express.User, done) {
     done(null, user);
 });
 
+app.set('trust proxy', 1) // trust first proxy
 app.use(
     session({
         secret: 'keyboard cat', resave: true, saveUninitialized: true, name: 'session1', cookie: {
