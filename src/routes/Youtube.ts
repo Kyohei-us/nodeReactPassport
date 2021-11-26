@@ -17,6 +17,7 @@ export async function googleAuthCallback(req: Request, res: Response) {
         let user = req.user as YTUser;
         req.session.profile_id = user.profile_id;
         req.session.accessToken = user.accessToken;
+        console.log("session is set!")
     }
     res.redirect("https://nifty-johnson-900cd2.netlify.app");
 }
