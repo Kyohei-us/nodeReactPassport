@@ -29,8 +29,7 @@ youtubeRouter.get('/auth/youtube', passport.authenticate('google', {
     scope: ['profile', 'https://www.googleapis.com/auth/youtube.readonly']
 }));
 youtubeRouter.get('/auth/youtube/callback', passport.authenticate('google', {
-    failureRedirect: '/',
-    session: true
+    failureRedirect: '/'
 }), googleAuthCallback);
 youtubeRouter.get('/getPlaylists', ensureAuthenticated, youtubeGetPlaylists)
 youtubeRouter.get('/getChannels', ensureAuthenticated, youtubeGetChannel)
