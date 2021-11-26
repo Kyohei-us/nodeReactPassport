@@ -10,8 +10,8 @@ import 'express-async-errors';
 import BaseRouter from './routes';
 import logger from '@shared/Logger';
 import passport from 'passport';
-// import session from "express-session"
-import cookieSession from 'cookie-session';
+import session from "express-session"
+// import cookieSession from 'cookie-session';
 import { Schema, model, connect, Error } from 'mongoose';
 // import { Strategy } from 'passport-spotify';
 // const SpotifyStrategy = Strategy;
@@ -99,22 +99,15 @@ passport.deserializeUser(function (user: Express.User, done) {
     done(null, user);
 });
 
-// app.use(
-//     session({
-//         secret: 'keyboard cat', resave: true, saveUninitialized: true, name: 'session1', cookie: {
-//             sameSite: 'none',
-//             secure: true,
-//             maxAge: 1000 * 60 * 60 * 24 * 7 // One Week
-//         }
-//     })
-// );
-
-app.use(cookieSession({
-    name: 'google-auth-session',
-    keys: ['key1', 'key2'],
-    httpOnly: false,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-}))
+app.use(
+    session({
+        secret: 'keyboard cat', resave: true, saveUninitialized: true, name: 'session1', cookie: {
+            sameSite: 'none',
+            secure: true,
+            maxAge: 1000 * 60 * 60 * 24 * 7 // One Week
+        }
+    })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
