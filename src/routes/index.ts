@@ -1,8 +1,8 @@
-import express, { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { getAllUsers, addOneUser, updateOneUser, deleteOneUser } from './Users';
 // import { getArtistTopTracks, getCurrent, searchArtist } from './Spotify';
 import passport from 'passport';
-import { googleAuthCallback, youtubeGetDLURLWrapper, youtubeGetLikedVideosWrapper, youtubeGetPlaylists, youtubeListVideoDLURLs, youtubeGetChannel, youtubeGetTopPopularVideosForChannelById } from './Youtube';
+import { googleAuthCallback, youtubeGetDLURLWrapper, youtubeGetLikedVideosWrapper, youtubeGetPlaylists, youtubeListVideoDLURLs, youtubeGetChannel, youtubeGetTopPopularVideosForChannelById, youtubeGetLikedVideosEjs, youtubeListVideoDLURLSEjs, youtubeGetSubscriptions } from './Youtube';
 
 // User-route
 const userRouter = Router();
@@ -12,36 +12,18 @@ userRouter.put('/update', updateOneUser);
 userRouter.delete('/delete/:id', deleteOneUser);
 
 
-// const scope = [
-//     "user-read-currently-playing",
-//     "user-read-playback-state",
-// ];
-
 function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
+    console.log("check if authed")
+    if (req.session.accessToken || req.session.profile_id) {
+        console.log("session got you!")
+    }
     if (req.isAuthenticated()) {
+        console.log("authed")
         return next();
     }
-    res.redirect('/login');
-    alert("Login to proceed!")
+    console.log("not authed")
+    res.send({ message: "You need to login first." })
 }
-
-// Spotify-route
-// const spotifyRouter = Router();
-// spotifyRouter.get('/auth/spotify', passport.authenticate('spotify', {
-//     scope: scope,
-// }));
-// spotifyRouter.get(
-//     '/auth/spotify/callback',
-//     passport.authenticate('spotify', { scope: scope, failureRedirect: '/auth/spotify' }),
-//     function (req, res) {
-//         console.log("authed")
-//         // Successful authentication, redirect home.
-//         res.redirect('/');
-//     }
-// );
-// spotifyRouter.get('/current', ensureAuthenticated, getCurrent);
-// spotifyRouter.get('/searchArtist/:query', ensureAuthenticated, searchArtist)
-// spotifyRouter.get('/getArtistTopTracks/:artist_id', ensureAuthenticated, getArtistTopTracks)
 
 
 // Youtube-route
@@ -55,9 +37,12 @@ youtubeRouter.get('/auth/youtube/callback', passport.authenticate('google', {
 youtubeRouter.get('/getPlaylists', ensureAuthenticated, youtubeGetPlaylists)
 youtubeRouter.get('/getChannels', ensureAuthenticated, youtubeGetChannel)
 youtubeRouter.get('/getLikedVideos', ensureAuthenticated, youtubeGetLikedVideosWrapper)
+youtubeRouter.get('/getLikedVideosEjs', ensureAuthenticated, youtubeGetLikedVideosEjs) // return ejs
 youtubeRouter.get('/getURL/:video_id', ensureAuthenticated, youtubeGetDLURLWrapper); // return html
 youtubeRouter.get('/listLiked', ensureAuthenticated, youtubeListVideoDLURLs) // return html
+youtubeRouter.get('/listLikedEjs', ensureAuthenticated, youtubeListVideoDLURLSEjs) // return ejs
 youtubeRouter.get('/getPopularVideosByChannelId/:channel_id', ensureAuthenticated, youtubeGetTopPopularVideosForChannelById);
+youtubeRouter.get('/getSubscriptions', ensureAuthenticated, youtubeGetSubscriptions)
 
 // Export the base-router
 const baseRouter = Router();

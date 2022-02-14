@@ -3,9 +3,24 @@ import axios, { AxiosRequestConfig } from "axios";
 import { Request, Response } from "express";
 import youtubedl, { YtResponse } from "youtube-dl-exec"
 
+/**
+ * Reference https://developers.google.com/youtube/v3/docs
+ * 
+ * @param req 
+ * @param res 
+ */
 export async function googleAuthCallback(req: Request, res: Response) {
-    console.log(req.params.code);
-    res.redirect('/')
+    console.log("googleAuthCallback is called")
+    // console.log(req.params.code);
+    console.log("user:", req.user)
+    if (req.user) {
+        let user = req.user as YTUser;
+        req.session.profile_id = user.profile_id;
+        req.session.accessToken = user.accessToken;
+        console.log("session is set!")
+        console.log("session:", req.session)
+    }
+    res.redirect("https://nifty-johnson-900cd2.netlify.app");
 }
 
 export async function youtubeGetPlaylists(req: Request, res: Response) {
@@ -20,6 +35,8 @@ export async function youtubeGetPlaylists(req: Request, res: Response) {
         }
     );
     if (ret) {
+        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
     }
 }
@@ -37,6 +54,8 @@ export async function youtubeGetChannel(req: Request, res: Response) {
         }
     );
     if (ret) {
+        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
     }
 }
@@ -71,9 +90,25 @@ async function youtubeGetLikedVideos(req: Request, res: Response) {
  * @returns 
  */
 export async function youtubeGetLikedVideosWrapper(req: Request, res: Response) {
+    console.log("get liked videos wrapper begin...")
     let ret = await youtubeGetLikedVideos(req, res);
     if (ret) {
+        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
+    }
+    return res.status(404).json({ message: "Not Found" })
+}
+
+/**
+ * 
+ * @param req 
+ * @param res 
+ */
+export async function youtubeGetLikedVideosEjs(req: Request, res: Response) {
+    let ret = await youtubeGetLikedVideos(req, res);
+    if (ret) {
+        return res.render('getLikedVideos', { "likedVideos": ret.data.items });
     }
 }
 
@@ -108,6 +143,30 @@ export async function youtubeListVideoDLURLs(req: Request, res: Response) {
     }
     html += `</body></html>`;
     res.send(html);
+}
+
+export async function youtubeListVideoDLURLSEjs(req: Request, res: Response) {
+    const myLikedVideos = await youtubeGetLikedVideos(req, res);
+    console.log(myLikedVideos.data)
+    let videoDLURLList: any[] = []
+    for (let i = 0; i < myLikedVideos.data.items.length; i++) {
+        const element = myLikedVideos.data.items[i];
+        let output = await youtubeGetDLURL(`${element.id}`);
+        if (typeof output === 'string') {
+            let url: string = output.split('\n')[0]
+            if (!url) {
+                res.redirect('/')
+            }
+            let videoDLURLListItem = {
+                url: url,
+                likedVideoElement: element,
+            }
+            videoDLURLList.push(videoDLURLListItem);
+        } else {
+            res.redirect('/')
+        }
+    }
+    res.render("listLikedVideosURL", { likedVideosDLURLList: videoDLURLList })
 }
 
 /**
@@ -170,6 +229,33 @@ export async function youtubeGetTopPopularVideosForChannelById(req: Request, res
         }
     );
     if (ret) {
+        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        return res.status(200).json(ret.data)
+    }
+}
+
+/**
+ * Get subscriptions of the authenticated user
+ * 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
+export async function youtubeGetSubscriptions(req: Request, res: Response) {
+    let reqUser = req.user as YTUser;
+    let accessToken = reqUser.accessToken;
+    let part = req.query.part ? req.query.part : "snippet"
+    let url = `https://youtube.googleapis.com/youtube/v3/subscriptions?part=${part}&mine=true`
+    let ret = await axios.get(
+        url,
+        {
+            headers: { Authorization: `Bearer ${accessToken}` }
+        }
+    );
+    if (ret) {
+        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
     }
 }

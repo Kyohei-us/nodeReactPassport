@@ -11,10 +11,12 @@ import BaseRouter from './routes';
 import logger from '@shared/Logger';
 import passport from 'passport';
 import session from "express-session"
+// import cookieSession from 'cookie-session';
 import { Schema, model, connect, Error } from 'mongoose';
 // import { Strategy } from 'passport-spotify';
 // const SpotifyStrategy = Strategy;
 import { Strategy as GStrategy } from 'passport-google-oauth20';
+import cors from 'cors';
 const GoogleStrategy = GStrategy;
 require('dotenv').config();
 
@@ -97,12 +99,25 @@ passport.deserializeUser(function (user: Express.User, done) {
     done(null, user);
 });
 
+app.set('trust proxy', 1) // trust first proxy
 app.use(
-    session({ secret: 'keyboard cat', resave: true, saveUninitialized: true })
+    session({
+        secret: 'keyboard cat', resave: true, saveUninitialized: true, name: 'session1', cookie: {
+            sameSite: 'none',
+            secure: true,
+            maxAge: 1000 * 60 * 60 * 24 * 7 // One Week
+        }
+    })
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cors({
+    origin: 'https://nifty-johnson-900cd2.netlify.app', // allow to server to accept request from different origin
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true // allow session cookie from browser to pass through
+}))
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -142,6 +157,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 const viewsDir = path.join(__dirname, 'views');
 app.set('views', viewsDir);
+app.set('view engine', 'ejs');
 const staticDir = path.join(__dirname, 'public');
 app.use(express.static(staticDir));
 app.get('*', (req: Request, res: Response) => {
