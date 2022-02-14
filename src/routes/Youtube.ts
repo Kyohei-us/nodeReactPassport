@@ -2,6 +2,7 @@ import { YTUser } from "@server";
 import axios, { AxiosRequestConfig } from "axios";
 import { Request, Response } from "express";
 import youtubedl, { YtResponse } from "youtube-dl-exec"
+require('dotenv').config();
 
 /**
  * Reference https://developers.google.com/youtube/v3/docs
@@ -20,7 +21,9 @@ export async function googleAuthCallback(req: Request, res: Response) {
         console.log("session is set!")
         console.log("session:", req.session)
     }
-    res.redirect("https://nifty-johnson-900cd2.netlify.app");
+    if (process.env.HOST_URI){
+        res.redirect(process.env.HOST_URI);
+    }
 }
 
 export async function youtubeGetPlaylists(req: Request, res: Response) {
