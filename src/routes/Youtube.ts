@@ -24,6 +24,7 @@ export async function googleAuthCallback(req: Request, res: Response) {
     if (process.env.HOST_URI){
         res.redirect(process.env.HOST_URI);
     }
+
 }
 
 export async function youtubeGetPlaylists(req: Request, res: Response) {
@@ -37,8 +38,8 @@ export async function youtubeGetPlaylists(req: Request, res: Response) {
             headers: { Authorization: `Bearer ${accessToken}` }
         }
     );
-    if (ret) {
-        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+    if (ret && process.env.FRONTEND_URI) {
+        res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URI);
         res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
     }
@@ -56,8 +57,8 @@ export async function youtubeGetChannel(req: Request, res: Response) {
             headers: { Authorization: `Bearer ${accessToken}` }
         }
     );
-    if (ret) {
-        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+    if (ret && process.env.FRONTEND_URI) {
+        res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URI);
         res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
     }
@@ -95,8 +96,8 @@ async function youtubeGetLikedVideos(req: Request, res: Response) {
 export async function youtubeGetLikedVideosWrapper(req: Request, res: Response) {
     console.log("get liked videos wrapper begin...")
     let ret = await youtubeGetLikedVideos(req, res);
-    if (ret) {
-        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+    if (ret && process.env.FRONTEND_URI) {
+        res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URI);
         res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
     }
@@ -231,8 +232,8 @@ export async function youtubeGetTopPopularVideosForChannelById(req: Request, res
             headers: { Authorization: `Bearer ${accessToken}` }
         }
     );
-    if (ret) {
-        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+    if (ret && process.env.FRONTEND_URI) {
+        res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URI);
         res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
     }
@@ -256,8 +257,8 @@ export async function youtubeGetSubscriptions(req: Request, res: Response) {
             headers: { Authorization: `Bearer ${accessToken}` }
         }
     );
-    if (ret) {
-        res.setHeader('Access-Control-Allow-Origin', 'https://nifty-johnson-900cd2.netlify.app');
+    if (ret && process.env.FRONTEND_URI) {
+        res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URI);
         res.setHeader('Access-Control-Allow-Credentials', 'true');
         return res.status(200).json(ret.data)
     }
