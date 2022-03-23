@@ -24,8 +24,9 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
 
 // Youtube-route
 const youtubeRouter = Router();
-youtubeRouter.get('/auth/youtube', (req, res) => {
-    req.session.returnTo = req.protocol + '://' + req.get('host') + req.originalUrl
+youtubeRouter.get('/auth/youtube', (req, res, next) => {
+    req.session.returnTo = req.protocol + '://' + req.get('host') + req.originalUrl;
+    next();
 }, passport.authenticate('google', {
     scope: ['profile', 'https://www.googleapis.com/auth/youtube.readonly']
 }));
