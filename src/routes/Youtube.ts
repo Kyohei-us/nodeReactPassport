@@ -22,8 +22,9 @@ export async function googleAuthCallback(req: Request, res: Response) {
         console.log("session:", req.session)
     }
     if (req.session.returnTo) {
-        res.redirect(req.session.returnTo);
+        let tempReturn = req.session.returnTo;
         delete req.session.returnTo;
+        res.redirect(tempReturn);
     } else if (process.env.HOST_URI) {
         res.redirect(process.env.HOST_URI);
     }
