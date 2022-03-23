@@ -6,6 +6,7 @@ declare module 'express-session' {
     interface SessionData {
         profile_id: string;
         accessToken: string;
+        returnTo: string;
     }
 }
 

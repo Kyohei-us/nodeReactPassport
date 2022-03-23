@@ -21,10 +21,12 @@ export async function googleAuthCallback(req: Request, res: Response) {
         console.log("session is set!")
         console.log("session:", req.session)
     }
-    if (process.env.HOST_URI){
+    if (req.session.returnTo) {
+        res.redirect(req.session.returnTo);
+        delete req.session.returnTo;
+    } else if (process.env.HOST_URI) {
         res.redirect(process.env.HOST_URI);
     }
-
 }
 
 export async function youtubeGetPlaylists(req: Request, res: Response) {
@@ -38,9 +40,7 @@ export async function youtubeGetPlaylists(req: Request, res: Response) {
             headers: { Authorization: `Bearer ${accessToken}` }
         }
     );
-    if (ret && process.env.FRONTEND_URI) {
-        res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URI);
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
+    if (ret) {
         return res.status(200).json(ret.data)
     }
 }
@@ -57,9 +57,7 @@ export async function youtubeGetChannel(req: Request, res: Response) {
             headers: { Authorization: `Bearer ${accessToken}` }
         }
     );
-    if (ret && process.env.FRONTEND_URI) {
-        res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URI);
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
+    if (ret) {
         return res.status(200).json(ret.data)
     }
 }
@@ -96,9 +94,7 @@ async function youtubeGetLikedVideos(req: Request, res: Response) {
 export async function youtubeGetLikedVideosWrapper(req: Request, res: Response) {
     console.log("get liked videos wrapper begin...")
     let ret = await youtubeGetLikedVideos(req, res);
-    if (ret && process.env.FRONTEND_URI) {
-        res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URI);
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
+    if (ret) {
         return res.status(200).json(ret.data)
     }
     return res.status(404).json({ message: "Not Found" })
@@ -232,9 +228,7 @@ export async function youtubeGetTopPopularVideosForChannelById(req: Request, res
             headers: { Authorization: `Bearer ${accessToken}` }
         }
     );
-    if (ret && process.env.FRONTEND_URI) {
-        res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URI);
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
+    if (ret) {
         return res.status(200).json(ret.data)
     }
 }
@@ -257,9 +251,7 @@ export async function youtubeGetSubscriptions(req: Request, res: Response) {
             headers: { Authorization: `Bearer ${accessToken}` }
         }
     );
-    if (ret && process.env.FRONTEND_URI) {
-        res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URI);
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
+    if (ret) {
         return res.status(200).json(ret.data)
     }
 }

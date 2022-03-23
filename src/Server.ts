@@ -63,7 +63,7 @@ passport.use(new GoogleStrategy({
         let result = await YTUserModel.findOne({ profile_id: profile.id }).exec()
         console.log(`Find one user by profile_id result: ${result}`)
         if (!result) {
-            console.log("New Spotify User appears. Adding to Database.")
+            console.log("New Youtube User appears. Adding to Database.")
             const doc = new YTUserModel({
                 profile_id: profile.id,
                 accessToken,
@@ -83,7 +83,7 @@ passport.use(new GoogleStrategy({
                 console.log("Updated access token and refresh token!")
                 YTUser.accessToken = accessToken;
                 YTUser.refreshToken = refreshToken;
-                const updatedResult = await YTUserModel.updateOne({ profile_id: YTUser.profile_id }, { accessToken: YTUser.accessToken, refreshToken: YTUser.refreshToken })
+                await YTUserModel.updateOne({ profile_id: YTUser.profile_id }, { accessToken: YTUser.accessToken, refreshToken: YTUser.refreshToken })
             }
             console.log(`Following YTUser object is returned: ${YTUser}`)
             cb(null, YTUser)
@@ -112,11 +112,14 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors({
-    origin: 'https://nifty-johnson-900cd2.netlify.app', // allow to server to accept request from different origin
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true // allow session cookie from browser to pass through
-}))
+if (process.env.FRONTEND_URI){
+    app.use(cors({
+        origin: process.env.FRONTEND_URI, // allow to server to accept request from different origin
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        credentials: true // allow session cookie from browser to pass through
+    }))    
+}
+
 
 
 app.use(express.json());

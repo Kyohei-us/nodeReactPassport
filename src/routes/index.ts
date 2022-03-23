@@ -15,6 +15,7 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
         return next();
     }
     console.log("not authed")
+    req.session.returnTo = req.url;
     // return login.html if not logged in
     res.sendFile('login.html', { root: path.join(__dirname, 'views') })
 }
